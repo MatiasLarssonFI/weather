@@ -38,4 +38,5 @@ dirs:
 clean: dirs
 	rm -f $(OBJDIR)/*.o
 	rm -f $(OBJDIR)/http/*.o
-	rm -f $(BINDIR)/*
+	rm -f ../bin/debug/*
+	rm -f ../bin/release/*
