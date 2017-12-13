@@ -6,13 +6,14 @@
 
 #include <unordered_map>
 #include <string>
-#include <ifstream>
+#include <memory>
 
 
 class WeatherServer
 {
     public:
         using t_settings = std::unordered_map<std::string, std::string>;
+        using t_pSrc = std::unique_ptr<WeatherSource>;
 
 
         /*!
@@ -51,8 +52,17 @@ class WeatherServer
         t_settings makeSettings() const;
 
 
+        /*!
+         * Creates the default config file.
+         */
+        void createDefaultConfig(std::string const & parent_dir, std::string const & full_path) const;
+
+
         t_settings m_settings;
-        std::vector<WeatherHandle> m_handles; //!< handles are ordered by descending priority
+        std::vector<t_pSrc> m_sources; //!< sources are ordered by descending priority
+
+        static const char _working_dir[];
+        static constexpr char _conf_filename[] = "server_config";
 };
 
 #endif // WEATHERSERVER_HXX
