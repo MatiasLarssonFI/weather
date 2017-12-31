@@ -12,7 +12,7 @@
 class OpenWeatherMapSrc : public WeatherSource
 {
     public:
-        OpenWeatherMapSrc(OpenWeatherMapSrcConf conf);
+        OpenWeatherMapSrc(std::string working_dir);
 
         virtual void configure(std::unordered_map<std::string, std::string> const & settings);
         virtual Weather read();
@@ -21,18 +21,18 @@ class OpenWeatherMapSrc : public WeatherSource
 
         virtual ~OpenWeatherMapSrc();
     private:
-        std::chrono::time_point makeLastRequestTime() const;
+        std::chrono::system_clock::time_point makeLastRequestTime() const;
 
 
         std::chrono::system_clock::time_point m_last_request_time;
-        static inline constexpr auto m_request_interval = std::chrono::seconds(5);
+        static constexpr auto m_request_interval = std::chrono::seconds(5);
 
-        static inline constexpr auto m_request_time_f = "/tmp/openweathermapsrc_lastrequest";
+        static constexpr auto m_request_time_f = "/tmp/openweathermapsrc_lastrequest";
 
         const std::string m_wd;
-        const std::string m_out_path;
-        const std::string m_api_key;
-        const std::string m_api_host;
+        std::string m_out_path;
+        std::string m_api_key;
+        std::string m_api_host;
 };
 
 #endif // OPENWEATHERMAPSRC_HXX

@@ -1,4 +1,4 @@
-#include "filesystemweathersource.hxx"
+#include "filesystemweathersrc.hxx"
 
 #include "weather.hxx"
 
@@ -20,18 +20,18 @@ void FileSystemWeatherSrc::configure(std::unordered_map<std::string, std::string
 
 
 bool FileSystemWeatherSrc::isAvailable() const {
-    return ::access(m_path.c_str(), ::R_OK) == 0;
+    return access(m_path.c_str(), R_OK) == 0;
 }
 
 
 Weather FileSystemWeatherSrc::read() {
     if (isAvailable()) {
-        bool is_rainy, is_sunny, is_windy, is_warm;
+        bool is_rainy = false, is_sunny = false, is_windy = false, is_warm = false;
         //TBD
+        return Weather { { is_rainy, is_sunny, is_windy, is_warm } };
     } else {
         throw std::runtime_error("FileSystemWeatherSrc not available");
     }
-    return Weather { is_rainy, is_sunny, is_windy, is_warm };
 }
 
 

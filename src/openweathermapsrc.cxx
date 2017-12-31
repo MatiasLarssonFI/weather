@@ -10,9 +10,11 @@
 #include <ctime>
 
 
-OpenWeatherMapSrc::OpenWeatherMapSrc(OpenWeatherMapSrcConf conf)
-    : m_last_request_time(makeLastRequestTime()),
-    , m_wd(std::move(conf.working_dir))
+constexpr std::chrono::seconds OpenWeatherMapSrc::m_request_interval;
+
+OpenWeatherMapSrc::OpenWeatherMapSrc(std::string working_dir)
+    : m_last_request_time(makeLastRequestTime())
+    , m_wd(std::move(working_dir))
 {}
 
 
@@ -24,19 +26,19 @@ void OpenWeatherMapSrc::configure(std::unordered_map<std::string, std::string> c
 
 
 bool OpenWeatherMapSrc::isAvailable() const {
-    return m_last_request_time > std::chrono::system_clock::now() - m_request_interval &&
+    return m_last_request_time > std::chrono::system_clock::now() - OpenWeatherMapSrc::m_request_interval &&
             !m_api_key.empty() && !m_api_host.empty();
 }
 
 
 Weather OpenWeatherMapSrc::read() {
     if (isAvailable()) {
-        bool is_rainy, is_sunny, is_windy, is_warm;
+        bool is_rainy = false, is_sunny = false, is_windy = false, is_warm = false;
         //TBD
+        return Weather { { is_rainy, is_sunny, is_windy, is_warm } };
     } else {
         throw std::runtime_error("OpenWeatherMapSrc not available");
     }
-    return Weather { is_rainy, is_sunny, is_windy, is_warm };
 }
 
 
@@ -48,9 +50,9 @@ void OpenWeatherMapSrc::writeDefaultConfig(std::ostream & stream) const {
 
 
 OpenWeatherMapSrc::~OpenWeatherMapSrc() {
-    std::ofstream f(m_request_time_f, std::ios_base::out|ios_base::trunc);
+    std::ofstream f(m_request_time_f, std::ios_base::out|std::ios_base::trunc);
     if (f.is_open()) {
-        f << m_last_request_time << "\n";
+        f << m_last_request_time.time_since_epoch().count() << "\n";
     }
 }
 
@@ -59,9 +61,9 @@ std::chrono::system_clock::time_point OpenWeatherMapSrc::makeLastRequestTime() c
     std::ifstream f(m_request_time_f);
     if (f.is_open()) {
         unsigned s;
-        s << f;
+        f >> s;
         if (f.good()) {
-            return std::chrono::system_clock::from_time_t((std::time_t)s);
+            return std::chrono::system_clock::time_point(std::chrono::system_clock::duration(s));
         }
     }
     return std::chrono::system_clock::from_time_t((std::time_t)0);

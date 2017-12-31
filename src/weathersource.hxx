@@ -1,8 +1,9 @@
 #ifndef WEATHERHANDLE_HXX
 #define WEATHERHANDLE_HXX
 
+#include "weather.hxx"
 
-#include <ofstream>
+#include <ostream>
 #include <unordered_map>
 
 
@@ -18,7 +19,7 @@ class WeatherSource
          * settings is a map of the settings and must contain
          * the settings of the source.
          */
-        virtual void configure(std::unordered_map<std::string, std::string> const & settings)add_pointer = 0;
+        virtual void configure(std::unordered_map<std::string, std::string> const & settings) = 0;
 
 
         /*!

@@ -1,14 +1,13 @@
 #ifndef WEATHER_HXX
 #define WEATHER_HXX
 
+#include "weatherinterpretation.hxx"
+
 
 class Weather
 {
     public:
-        const bool is_rainy;
-        const bool is_sunny;
-        const bool is_windy;
-        const bool is_warm;
+        WeatherInterpretation interpretation;
 };
 
 #endif // WEATHER_HXX

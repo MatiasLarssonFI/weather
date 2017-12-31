@@ -22,7 +22,7 @@ class FileSystemWeatherSrc : public WeatherSource
         virtual ~FileSystemWeatherSrc() {};
     private:
         const std::string m_wd;
-        const std::string m_path;
+        std::string m_path;
 };
 
 #endif // FILESYSTEMWEATHERSOURCE_HXX
