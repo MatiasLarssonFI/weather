@@ -5,8 +5,18 @@
 #include <unordered_map>
 #include <string>
 #include <fstream>
+#include <algorithm>
 
 #include <sys/stat.h>
+
+
+//! Trim leading whitespaces
+static void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
+        return !std::isspace(ch);
+    }));
+}
+
 
 /*!
  * \tparam TpSrc source pointer type
@@ -45,8 +55,8 @@ class WeatherServerSettings
                     std::string key, value;
                     while (std::getline(conf_file, key, ':')) {
                         if (!key.empty()) {
-                            conf_file >> value;
-                            conf_file.ignore(); // ignore rest of the line
+                            std::getline(conf_file, value);
+                            ltrim(value);
                             settings[key] = value;
                         }
                     }
