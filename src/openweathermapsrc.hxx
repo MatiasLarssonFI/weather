@@ -29,7 +29,7 @@ class OpenWeatherMapSrc : public WeatherSource
         std::chrono::system_clock::time_point m_last_request_time;
         static constexpr auto m_request_interval = std::chrono::seconds(5);
 
-        static constexpr auto m_request_time_f = "/tmp/openweathermapsrc_lastrequest";
+        static constexpr auto m_request_time_f = "openweathermapsrc_lastrequest";
 
         const std::string m_wd;
         std::string m_out_path;

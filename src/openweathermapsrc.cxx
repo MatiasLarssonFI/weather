@@ -52,7 +52,7 @@ void OpenWeatherMapSrc::writeDefaultConfig(ConfigWriteContext & ctx) const {
 
 
 OpenWeatherMapSrc::~OpenWeatherMapSrc() {
-    std::ofstream f(m_request_time_f, std::ios_base::out|std::ios_base::trunc);
+    std::ofstream f(m_wd + "/" + m_request_time_f, std::ios_base::out|std::ios_base::trunc);
     if (f.is_open()) {
         f << m_last_request_time.time_since_epoch().count() << "\n";
     }
@@ -60,7 +60,7 @@ OpenWeatherMapSrc::~OpenWeatherMapSrc() {
 
 
 std::chrono::system_clock::time_point OpenWeatherMapSrc::makeLastRequestTime() const {
-    std::ifstream f(m_request_time_f);
+    std::ifstream f(m_wd + "/" + m_request_time_f);
     if (f.is_open()) {
         unsigned s;
         f >> s;
