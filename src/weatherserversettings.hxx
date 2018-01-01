@@ -83,7 +83,7 @@ class WeatherServerSettings
             ConfigWriteContext ctx(conf_file);
 
             if (conf_file) {
-                for (auto & src : m_sources) {
+                for (auto const & src : m_sources) {
                     src->writeDefaultConfig(ctx);
                 }
             }
