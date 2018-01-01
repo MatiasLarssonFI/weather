@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 
 /*!
- * \tparam TpSrc weather source pointer type
+ * \tparam TpSrc source pointer type
  */
 template <class TpSrc>
 class WeatherServerSettings
@@ -24,18 +24,23 @@ class WeatherServerSettings
         {}
 
         /*!
+         * Returns a map of the settings.
          * \throw std::runtime_error
          */
         t_settings makeSettings() const {
             if (!m_wd.empty()) {
+                // file path
                 const std::string dir = m_wd + "/.mlweather";
                 const std::string path = dir + "/" + m_conf_filename;
                 std::ifstream conf_file(path);
+
+                // if file doesn't exist, create default
                 if (!conf_file) {
                     createDefaultConfig(dir, path);
                 }
                 conf_file.open(path);
                 if (conf_file) {
+                    // parse settings of format 'key: value'
                     t_settings settings;
                     std::string key, value;
                     while (std::getline(conf_file, key, ':')) {
@@ -58,7 +63,10 @@ class WeatherServerSettings
          * Creates the default config file.
          */
         void createDefaultConfig(std::string const & parent_dir, std::string const & full_path) const {
+            // create directory for config
             ::mkdir(parent_dir.c_str(), S_IRWXU);
+
+            // write default config from sources
             std::ofstream conf_file(full_path);
             if (conf_file) {
                 for (auto & src : m_sources) {

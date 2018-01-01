@@ -20,7 +20,7 @@ void FileSystemWeatherSrc::configure(std::unordered_map<std::string, std::string
 
 
 bool FileSystemWeatherSrc::isAvailable() const {
-    return access(m_path.c_str(), R_OK) == 0;
+    return access(m_path.c_str(), R_OK) == 0; // if file is readable
 }
 
 

@@ -9,6 +9,7 @@
 #include <unordered_map>
 
 
+//! Source for a file on disk
 class FileSystemWeatherSrc : public WeatherSource
 {
     public:

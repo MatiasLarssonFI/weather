@@ -9,6 +9,7 @@
 #include <ostream>
 
 
+//! Source for OpenWeatherMap
 class OpenWeatherMapSrc : public WeatherSource
 {
     public:

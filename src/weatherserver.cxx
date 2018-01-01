@@ -17,10 +17,14 @@ WeatherServer::WeatherServer()
     , m_settings_helper(WeatherServer::_conf_filename, m_sources, WeatherServer::_working_dir)
     , m_settings() // assignment in body
 {
+    // construct weather sources
     m_sources.emplace_back(new FileSystemWeatherSrc(WeatherServer::_working_dir));
     m_sources.emplace_back(new OpenWeatherMapSrc(WeatherServer::_working_dir));
+
+    // m_sources must be populated in order to makeSettings()
     m_settings = m_settings_helper.makeSettings();
 
+    // configure sources using settings
     for (auto & src : m_sources) {
         src->configure(m_settings);
     }
