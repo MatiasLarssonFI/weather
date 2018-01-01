@@ -19,9 +19,9 @@ OpenWeatherMapSrc::OpenWeatherMapSrc(std::string working_dir)
 
 
 void OpenWeatherMapSrc::configure(std::unordered_map<std::string, std::string> const & settings) {
-    m_out_path = m_wd + "/" + settings.at("openweathermapsource_out");
-    m_api_key = settings.at("openweathermapsource_apikey");
-    m_api_host = settings.at("openweathermapsource_host");
+    m_out_path = m_wd + "/" + settings.at("openweathermapsrc_out");
+    m_api_key = settings.at("openweathermapsrc_apikey");
+    m_api_host = settings.at("openweathermapsrc_host");
 }
 
 
