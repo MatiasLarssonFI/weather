@@ -40,7 +40,8 @@ class WeatherServerSettings
                     std::string key, value;
                     while (std::getline(conf_file, key, ':')) {
                         if (!key.empty()) {
-                            std::getline(conf_file, value);
+                            conf_file >> value;
+                            conf_file.ignore(); // ignore rest of the line
                             settings[key] = value;
                         }
                     }
