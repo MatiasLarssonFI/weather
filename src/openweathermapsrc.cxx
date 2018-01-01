@@ -1,5 +1,7 @@
 #include "openweathermapsrc.hxx"
 
+#include "configwritecontext.hxx"
+
 #include <stdexcept>
 #include <utility>
 #include <unordered_map>
@@ -42,10 +44,10 @@ Weather OpenWeatherMapSrc::read() {
 }
 
 
-void OpenWeatherMapSrc::writeDefaultConfig(std::ostream & stream) const {
-    stream << "openweathermapsrc_apikey: [api key]\n";
-    stream << "openweathermapsrc_host: [host address]\n";
-    stream << "openweathermapsrc_out: [file which API response is written to]\n";
+void OpenWeatherMapSrc::writeDefaultConfig(ConfigWriteContext & ctx) const {
+    ctx.add("openweathermapsrc_apikey", "[api key]");
+    ctx.add("openweathermapsrc_host", "[host address]");
+    ctx.add("openweathermapsrc_out", "[file which API response is written to]");
 }
 
 

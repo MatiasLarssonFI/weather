@@ -2,6 +2,7 @@
 #define OPENWEATHERMAPSRC_HXX
 
 #include "weathersource.hxx"
+#include "configwritecontext.hxx"
 
 #include <chrono>
 #include <unordered_map>
@@ -18,7 +19,7 @@ class OpenWeatherMapSrc : public WeatherSource
         virtual void configure(std::unordered_map<std::string, std::string> const & settings);
         virtual Weather read();
         virtual bool isAvailable() const;
-        virtual void writeDefaultConfig(std::ostream & stream) const;
+        virtual void writeDefaultConfig(ConfigWriteContext &) const;
 
         virtual ~OpenWeatherMapSrc();
     private:

@@ -3,6 +3,7 @@
 
 #include "weather.hxx"
 #include "weathersource.hxx"
+#include "configwritecontext.hxx"
 
 #include <ostream>
 #include <string>
@@ -18,7 +19,7 @@ class FileSystemWeatherSrc : public WeatherSource
         virtual void configure(std::unordered_map<std::string, std::string> const & settings);
         virtual Weather read();
         virtual bool isAvailable() const;
-        virtual void writeDefaultConfig(std::ostream & stream) const;
+        virtual void writeDefaultConfig(ConfigWriteContext &) const;
 
         virtual ~FileSystemWeatherSrc() {};
     private:

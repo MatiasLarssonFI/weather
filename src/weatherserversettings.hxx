@@ -1,6 +1,8 @@
 #ifndef WEATHERSERVERSETTINGS_HXX
 #define WEATHERSERVERSETTINGS_HXX
 
+#include "configwritecontext.hxx"
+
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -78,9 +80,11 @@ class WeatherServerSettings
 
             // write default config from sources
             std::ofstream conf_file(full_path);
+            ConfigWriteContext ctx(conf_file);
+
             if (conf_file) {
                 for (auto & src : m_sources) {
-                    src->writeDefaultConfig(conf_file);
+                    src->writeDefaultConfig(ctx);
                 }
             }
         }

@@ -1,7 +1,8 @@
-#ifndef WEATHERHANDLE_HXX
-#define WEATHERHANDLE_HXX
+#ifndef WEATHERSOURCE_HXX
+#define WEATHERSOURCE_HXX
 
 #include "weather.hxx"
+#include "configwritecontext.hxx"
 
 #include <ostream>
 #include <unordered_map>
@@ -45,10 +46,10 @@ class WeatherSource
          * The configuration format in regex is "(^key: value$)*".
          * The key should be prefixed with the weather source name.
          */
-        virtual void writeDefaultConfig(std::ostream & stream) const = 0;
+        virtual void writeDefaultConfig(ConfigWriteContext &) const = 0;
 
 
         virtual ~WeatherSource() {};
 };
 
-#endif // WEATHERHANDLE_HXX
+#endif // WEATHERSOURCE_HXX

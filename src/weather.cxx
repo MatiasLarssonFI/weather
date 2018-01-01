@@ -1,5 +1,8 @@
 #include <iostream>
 
-int main() {
+#include "weatherserver.hxx"
 
+
+int main() {
+    WeatherServer server;
 }

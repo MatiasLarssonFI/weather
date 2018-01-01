@@ -1,6 +1,7 @@
 #include "filesystemweathersrc.hxx"
 
 #include "weather.hxx"
+#include "configwritecontext.hxx"
 
 #include <ostream>
 #include <string>
@@ -35,6 +36,6 @@ Weather FileSystemWeatherSrc::read() {
 }
 
 
-void FileSystemWeatherSrc::writeDefaultConfig(std::ostream & stream) const {
-    stream << "filesystemweathersrc_in: " << m_wd << "/fs_src_in\n";
+void FileSystemWeatherSrc::writeDefaultConfig(ConfigWriteContext & ctx) const {
+    ctx.add("filesystemweathersrc_in", m_wd + "/fs_src_in");
 }
