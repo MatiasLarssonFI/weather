@@ -47,8 +47,9 @@ class WeatherServerSettings
                 // if file doesn't exist, create default
                 if (!conf_file) {
                     createDefaultConfig(dir, path);
+                    conf_file.open(path);
                 }
-                conf_file.open(path);
+
                 if (conf_file) {
                     // parse settings of format 'key: value'
                     t_settings settings;
