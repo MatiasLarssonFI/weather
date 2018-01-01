@@ -40,13 +40,12 @@ class WeatherServerSettings
         t_settings makeSettings() const {
             if (!m_wd.empty()) {
                 // file path
-                const std::string dir = m_wd + "/.mlweather";
-                const std::string path = dir + "/" + m_conf_filename;
+                const std::string path = m_wd + "/" + m_conf_filename;
                 std::ifstream conf_file(path);
 
                 // if file doesn't exist, create default
                 if (!conf_file) {
-                    createDefaultConfig(dir, path);
+                    createDefaultConfig(m_wd, path);
                     conf_file.open(path);
                 }
 

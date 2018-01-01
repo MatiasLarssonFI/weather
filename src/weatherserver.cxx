@@ -10,7 +10,7 @@
 
 
 constexpr char WeatherServer::_conf_filename[];
-const char* WeatherServer::_working_dir = std::getenv("HOME");
+const std::string WeatherServer::_working_dir = std::string(std::getenv("HOME")) + "/.mlweather";
 
 WeatherServer::WeatherServer()
     : m_sources() // emplacements in body

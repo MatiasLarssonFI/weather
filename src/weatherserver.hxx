@@ -38,7 +38,7 @@ class WeatherServer
         WeatherServerSettings<t_pSrc> m_settings_helper;
         t_settings m_settings;
 
-        static const char* _working_dir;
+        static const std::string _working_dir;
         static constexpr char _conf_filename[] = "server_config";
 };
 
