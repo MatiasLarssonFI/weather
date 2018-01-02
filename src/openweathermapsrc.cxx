@@ -24,6 +24,7 @@ void OpenWeatherMapSrc::configure(std::unordered_map<std::string, std::string> c
     m_out_path = m_wd + "/" + settings.at("openweathermapsrc_out");
     m_api_key = settings.at("openweathermapsrc_apikey");
     m_api_host = settings.at("openweathermapsrc_host");
+    m_city_id = settings.at("openweathermapsrc_city_id");
 }
 
 
@@ -48,6 +49,7 @@ void OpenWeatherMapSrc::writeDefaultConfig(ConfigWriteContext & ctx) const {
     ctx.add("openweathermapsrc_apikey", "[api key]");
     ctx.add("openweathermapsrc_host", "[host address]");
     ctx.add("openweathermapsrc_out", "[file which API response is written to]");
+    ctx.add("openweathermapsrc_city_id", "[city ID]");
 }
 
 

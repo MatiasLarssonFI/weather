@@ -23,6 +23,7 @@ class OpenWeatherMapSrc : public WeatherSource
 
         virtual ~OpenWeatherMapSrc();
     private:
+        //! Loads the last request time (from disk).
         std::chrono::system_clock::time_point makeLastRequestTime() const;
 
 
@@ -35,6 +36,7 @@ class OpenWeatherMapSrc : public WeatherSource
         std::string m_out_path;
         std::string m_api_key;
         std::string m_api_host;
+        std::string m_city_id;
 };
 
 #endif // OPENWEATHERMAPSRC_HXX
