@@ -5,4 +5,5 @@
 
 int main() {
     WeatherServer server;
+    server.currentWeather();
 }
