@@ -56,7 +56,7 @@ class WeatherServerSettings
                     t_settings settings;
                     std::string key, value;
                     while (std::getline(conf_file, key, ':')) {
-                        if (!key.empty()) {
+                        if (!key.empty() && key[0] != '#') { // # stands for comment
                             std::getline(conf_file, value);
                             ltrim(value);
                             settings[key] = value;
