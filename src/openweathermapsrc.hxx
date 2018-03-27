@@ -26,6 +26,11 @@ class OpenWeatherMapSrc : public WeatherSource
         //! Loads the last request time (from disk).
         std::chrono::system_clock::time_point makeLastRequestTime() const;
 
+        //! Writes the last request time to d
+        void saveRequestTime() const;
+
+        //! Writes the HTTP response body to disk
+        void saveResponseBody(std::string const &) const;
 
         std::chrono::system_clock::time_point m_last_request_time;
         static constexpr auto m_request_interval = std::chrono::minutes(10);

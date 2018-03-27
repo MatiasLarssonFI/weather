@@ -3,6 +3,9 @@
 #include "configwritecontext.hxx"
 #include "json.hpp"
 #include "http/http_request.hxx"
+#include "measures.hxx"
+#include "units.hxx"
+#include "weatherrecord.hxx"
 
 #include <stdexcept>
 #include <utility>
@@ -41,22 +44,22 @@ Weather OpenWeatherMapSrc::read() {
     if (isAvailable()) {
         HTTPRequest r(m_api_host + "/data/2.5/weather?id=" + m_city_id  + "&units=metric&APPID=" + m_api_key);
         HTTPResponse resp = r.perform();
+        std::string const & resp_body = resp.body();
         unsigned http_status = resp.HTTPCode();
         if (http_status < 300 && http_status >= 200) {
-            bool is_rainy = false, is_sunny = false, is_windy = false, is_warm = false;
             using json = nlohmann::json;
-            std::string const & resp_body = resp.body();
             json j = json::parse(resp_body);
-            is_rainy = j["rain"]["3h"] > 1; // mm
-            is_sunny = j["clouds"]["all"] < 10; // %
-            is_windy = j["wind"]["speed"] > 5; // m/s
-            is_warm = j["main"]["temp"] > 12; // °C
+            WeatherRecord wr(
+                RainVolume<Millimeter<unsigned>>{ { (unsigned)j["rain"]["3h"] } },
+                CloudPercentage{ { j["clouds"]["all"] } },
+                WindSpeed<MetersPerSec<unsigned>>{ { (unsigned)j["wind"]["speed"] } },
+                Temperature<Celcius<int>>{ { (int)j["main"]["temp"] } }
+            );
             m_last_request_time = std::chrono::system_clock::now();
-            save_request_time(m_last_request_time);
-            save_response_body(resp_body);
-            return Weather { { is_rainy, is_sunny, is_windy, is_warm } };
+            saveResponseBody(resp_body);
+            return { wr.makeInterpretation(), std::move(wr) };
         } else {
-            throw std::runtime_error(std::string("OpenWeatherMapSrc request failed. Body: ") + resp.body());
+            throw std::runtime_error(std::string("OpenWeatherMapSrc request failed. Body: ") + resp_body);
         }
     } else {
         throw std::runtime_error("OpenWeatherMapSrc not available");
@@ -72,11 +75,24 @@ void OpenWeatherMapSrc::writeDefaultConfig(ConfigWriteContext & ctx) const {
 }
 
 
-OpenWeatherMapSrc::~OpenWeatherMapSrc() {
+void OpenWeatherMapSrc::saveRequestTime() const {
     std::ofstream f(m_wd + "/" + m_request_time_f, std::ios_base::out|std::ios_base::trunc);
     if (f.is_open()) {
         f << m_last_request_time.time_since_epoch().count() << "\n";
     }
+}
+
+
+void OpenWeatherMapSrc::saveResponseBody(std::string const & body) const {
+    std::ofstream f(m_wd + "/" + m_out_path, std::ios_base::out|std::ios_base::trunc);
+    if (f.is_open()) {
+        f << body << "\n";
+    }
+}
+
+
+OpenWeatherMapSrc::~OpenWeatherMapSrc() {
+    saveRequestTime();
 }
 
 

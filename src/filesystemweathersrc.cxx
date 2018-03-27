@@ -2,8 +2,13 @@
 
 #include "weather.hxx"
 #include "configwritecontext.hxx"
+#include "measures.hxx"
+#include "units.hxx"
+#include "json.hpp"
+#include "weatherrecord.hxx"
 
 #include <ostream>
+#include <fstream>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -27,9 +32,17 @@ bool FileSystemWeatherSrc::isAvailable() const {
 
 Weather FileSystemWeatherSrc::read() {
     if (isAvailable()) {
-        bool is_rainy = false, is_sunny = false, is_windy = false, is_warm = false;
-        //TBD
-        return Weather { { is_rainy, is_sunny, is_windy, is_warm } };
+        using json = nlohmann::json;
+        std::ifstream json_file(m_path);
+        json j;
+        json_file >> j;
+        WeatherRecord wr(
+            RainVolume<Millimeter<unsigned>>{ (unsigned){ j["rain"]["3h"] } },
+            CloudPercentage{ { j["clouds"]["all"] } },
+            WindSpeed<MetersPerSec<unsigned>>{ { (unsigned)j["wind"]["speed"] } },
+            Temperature<Celcius<int>>{ { (int)j["main"]["temp"] } }
+        );
+        return { wr.makeInterpretation(), std::move(wr) };
     } else {
         throw std::runtime_error("FileSystemWeatherSrc not available");
     }
