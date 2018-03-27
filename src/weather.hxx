@@ -5,11 +5,10 @@
 #include "weatherrecord.hxx"
 
 
-class Weather
+struct Weather
 {
-    public:
-        WeatherInterpretation interpretation;
-        WeatherRecord record;
+    const WeatherInterpretation interpretation;
+    const WeatherRecord record;
 };
 
 #endif // WEATHER_HXX

@@ -9,7 +9,7 @@
  */
 template <class T>
 struct Measure {
-    T value;
+    const T value;
 
     Measure(T value)
         : value(std::move(value))
