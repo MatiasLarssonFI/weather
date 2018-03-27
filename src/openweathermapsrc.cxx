@@ -43,7 +43,7 @@ bool OpenWeatherMapSrc::isAvailable() const {
 Weather OpenWeatherMapSrc::read() {
     if (isAvailable()) {
         HTTPRequest r(m_api_host + "/data/2.5/weather?id=" + m_city_id  + "&units=metric&APPID=" + m_api_key);
-        HTTPResponse resp = r.perform();
+        const HTTPResponse resp = r.perform();
         std::string const & resp_body = resp.body();
         const unsigned http_status = resp.HTTPCode();
         if (http_status < 300 && http_status >= 200) {
