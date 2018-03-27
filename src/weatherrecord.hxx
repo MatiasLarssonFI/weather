@@ -6,18 +6,17 @@
 #include "units.hxx"
 
 
-class WeatherRecord
+struct WeatherRecord
 {
-    public:
-        WeatherRecord(RainVolume<Millimeter<unsigned>>, CloudPercentage, WindSpeed<MetersPerSec<unsigned>>, Temperature<Celcius<int>>);
+    WeatherRecord(RainVolume<Millimeter<unsigned>>, CloudPercentage, WindSpeed<MetersPerSec<unsigned>>, Temperature<Celcius<int>>);
 
-        //! Makes a WeatherIntepretation out of the record.
-        WeatherInterpretation makeInterpretation() const;
-    private:
-        RainVolume<Millimeter<unsigned>> m_rain_vol;
-        CloudPercentage m_cloud_percentage;
-        WindSpeed<MetersPerSec<unsigned>> m_wind_speed;
-        Temperature<Celcius<int>> m_temperature;
+    //! Makes a WeatherIntepretation out of the record.
+    WeatherInterpretation makeInterpretation() const;
+
+    const RainVolume<Millimeter<unsigned>> rain_vol;
+    const CloudPercentage cloud_percentage;
+    const WindSpeed<MetersPerSec<unsigned>> wind_speed;
+    const Temperature<Celcius<int>> temperature;
 };
 
 #endif // WEATHERRECORD_HXX
