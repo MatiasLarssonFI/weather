@@ -45,7 +45,7 @@ Weather OpenWeatherMapSrc::read() {
         HTTPRequest r(m_api_host + "/data/2.5/weather?id=" + m_city_id  + "&units=metric&APPID=" + m_api_key);
         HTTPResponse resp = r.perform();
         std::string const & resp_body = resp.body();
-        unsigned http_status = resp.HTTPCode();
+        const unsigned http_status = resp.HTTPCode();
         if (http_status < 300 && http_status >= 200) {
             using json = nlohmann::json;
             json j = json::parse(resp_body);
