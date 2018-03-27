@@ -7,11 +7,11 @@
 /*!
  * \tparam T Data type
  */
-template <class T>
+template <class T, class U = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 struct Unit {
     const T value;
 
-    Unit(typename std::enable_if<std::is_arithmetic<T>::value, T>::type value)
+    Unit(T value)
         : value(value)
     {}
 
