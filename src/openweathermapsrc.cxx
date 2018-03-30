@@ -20,8 +20,8 @@
 constexpr std::chrono::minutes OpenWeatherMapSrc::m_request_interval;
 
 OpenWeatherMapSrc::OpenWeatherMapSrc(std::string working_dir)
-    : m_last_request_time(makeLastRequestTime())
-    , m_wd(std::move(working_dir))
+    : m_wd(std::move(working_dir))
+    , m_last_request_time(makeLastRequestTime())
 {}
 
 
@@ -84,7 +84,7 @@ void OpenWeatherMapSrc::saveRequestTime() const {
 
 
 void OpenWeatherMapSrc::saveResponseBody(std::string const & body) const {
-    std::ofstream f(m_wd + "/" + m_out_path, std::ios_base::out|std::ios_base::trunc);
+    std::ofstream f(m_out_path, std::ios_base::out|std::ios_base::trunc);
     if (f.is_open()) {
         f << body << "\n";
     }

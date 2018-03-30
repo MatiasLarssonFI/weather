@@ -32,12 +32,13 @@ class OpenWeatherMapSrc : public WeatherSource
         //! Writes the HTTP response body to disk
         void saveResponseBody(std::string const &) const;
 
-        std::chrono::system_clock::time_point m_last_request_time;
         static constexpr auto m_request_interval = std::chrono::minutes(10);
 
         static constexpr auto m_request_time_f = "openweathermapsrc_lastrequest";
 
         const std::string m_wd;
+        std::chrono::system_clock::time_point m_last_request_time;
+
         std::string m_out_path;
         std::string m_api_key;
         std::string m_api_host;
