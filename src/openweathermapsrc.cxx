@@ -1,11 +1,12 @@
 #include "openweathermapsrc.hxx"
 
 #include "configwritecontext.hxx"
-#include "json.hpp"
 #include "http/http_request.hxx"
 #include "measures.hxx"
 #include "units.hxx"
 #include "weatherrecord.hxx"
+
+#include "json.hpp"
 
 #include <stdexcept>
 #include <utility>
@@ -51,12 +52,7 @@ Weather OpenWeatherMapSrc::read() {
             m_last_request_time = std::chrono::system_clock::now();
             using json = nlohmann::json;
             json j = json::parse(resp_body);
-            WeatherRecord wr(
-                RainVolume<Millimeter<unsigned>>{ { (unsigned)j["rain"]["3h"] } },
-                CloudPercentage{ { j["clouds"]["all"] } },
-                WindSpeed<MetersPerSec<unsigned>>{ { (unsigned)j["wind"]["speed"] } },
-                Temperature<Celcius<int>>{ { (int)j["main"]["temp"] } }
-            );
+            auto wr = j.get<WeatherRecord>();
             return { wr.makeInterpretation(), std::move(wr) };
         } else {
             throw std::runtime_error(std::string("OpenWeatherMapSrc request failed. Body: ") + resp_body);

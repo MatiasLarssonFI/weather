@@ -5,18 +5,20 @@
 #include "measures.hxx"
 #include "units.hxx"
 
+#include "json.hpp"
+
 
 struct WeatherRecord
 {
-    WeatherRecord(RainVolume<Millimeter<unsigned>>, CloudPercentage, WindSpeed<MetersPerSec<unsigned>>, Temperature<Celcius<int>>);
-
     //! Makes a WeatherIntepretation out of the record.
     WeatherInterpretation makeInterpretation() const;
 
-    const RainVolume<Millimeter<unsigned>> rain_vol;
-    const CloudPercentage cloud_percentage;
-    const WindSpeed<MetersPerSec<unsigned>> wind_speed;
-    const Temperature<Celcius<int>> temperature;
+    RainVolume<Millimeter<unsigned>> rain_vol;
+    CloudPercentage cloud_percentage;
+    WindSpeed<MetersPerSec<unsigned>> wind_speed;
+    Temperature<Celcius<int>> temperature;
 };
+
+void from_json(const nlohmann::json& j, WeatherRecord& wr);
 
 #endif // WEATHERRECORD_HXX

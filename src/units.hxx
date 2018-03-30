@@ -9,7 +9,7 @@
  */
 template <class T, class U = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 struct Unit {
-    const T value;
+    T value;
 
     Unit(T value)
         : value(value)

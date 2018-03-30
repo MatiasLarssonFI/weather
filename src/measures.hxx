@@ -9,11 +9,13 @@
  */
 template <class T>
 struct Measure {
-    const T value;
+    T value;
 
-    Measure(T value)
+    explicit Measure(T value)
         : value(std::move(value))
     {}
+
+    Measure() = default;
 
     operator T () const {
         return value;

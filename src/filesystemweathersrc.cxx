@@ -4,8 +4,9 @@
 #include "configwritecontext.hxx"
 #include "measures.hxx"
 #include "units.hxx"
-#include "json.hpp"
 #include "weatherrecord.hxx"
+
+#include "json.hpp"
 
 #include <ostream>
 #include <fstream>
@@ -36,12 +37,7 @@ Weather FileSystemWeatherSrc::read() {
         std::ifstream json_file(m_path);
         json j;
         json_file >> j;
-        WeatherRecord wr(
-            RainVolume<Millimeter<unsigned>>{ (unsigned){ j["rain"]["3h"] } },
-            CloudPercentage{ { j["clouds"]["all"] } },
-            WindSpeed<MetersPerSec<unsigned>>{ { (unsigned)j["wind"]["speed"] } },
-            Temperature<Celcius<int>>{ { (int)j["main"]["temp"] } }
-        );
+        auto wr = j.get<WeatherRecord>();
         return { wr.makeInterpretation(), std::move(wr) };
     } else {
         throw std::runtime_error("FileSystemWeatherSrc not available");
