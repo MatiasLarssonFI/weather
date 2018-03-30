@@ -47,6 +47,8 @@ Weather OpenWeatherMapSrc::read() {
         std::string const & resp_body = resp.body();
         const unsigned http_status = resp.HTTPCode();
         if (http_status < 300 && http_status >= 200) {
+            saveResponseBody(resp_body);
+            m_last_request_time = std::chrono::system_clock::now();
             using json = nlohmann::json;
             json j = json::parse(resp_body);
             WeatherRecord wr(
@@ -55,8 +57,6 @@ Weather OpenWeatherMapSrc::read() {
                 WindSpeed<MetersPerSec<unsigned>>{ { (unsigned)j["wind"]["speed"] } },
                 Temperature<Celcius<int>>{ { (int)j["main"]["temp"] } }
             );
-            m_last_request_time = std::chrono::system_clock::now();
-            saveResponseBody(resp_body);
             return { wr.makeInterpretation(), std::move(wr) };
         } else {
             throw std::runtime_error(std::string("OpenWeatherMapSrc request failed. Body: ") + resp_body);
