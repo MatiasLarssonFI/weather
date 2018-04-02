@@ -67,7 +67,7 @@ class OpenWeatherMapSrc : public WeatherSource
 
         bool isAvailable() const {
             return m_last_request_time == std::chrono::system_clock::time_point::min() ||
-                    ( m_last_request_time > std::chrono::system_clock::now() - OpenWeatherMapSrc::m_request_interval &&
+                    ( m_last_request_time < std::chrono::system_clock::now() - OpenWeatherMapSrc::m_request_interval &&
                     !m_api_key.empty() && !m_api_host.empty() );
         }
 
