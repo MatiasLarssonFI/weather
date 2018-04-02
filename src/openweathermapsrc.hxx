@@ -87,10 +87,10 @@ class OpenWeatherMapSrc : public WeatherSource
         std::chrono::system_clock::time_point makeLastRequestTime() const {
             std::ifstream f(m_wd + "/" + m_request_time_f);
             if (f.is_open()) {
-                unsigned s;
-                f >> s;
+                unsigned long t;
+                f >> t;
                 if (f.good()) {
-                    return std::chrono::system_clock::time_point(std::chrono::system_clock::duration(s));
+                    return std::chrono::system_clock::time_point(std::chrono::system_clock::duration(t));
                 }
             }
             return std::chrono::system_clock::time_point::min();
