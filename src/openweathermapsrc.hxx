@@ -33,7 +33,7 @@ class OpenWeatherMapSrc : public WeatherSource
         {}
 
 
-        virtual void configure(std::unordered_map<std::string, std::string> const & settings) {
+        void configure(std::unordered_map<std::string, std::string> const & settings) {
             m_out_path = m_wd + "/" + settings.at("openweathermapsrc_out");
             m_api_key = settings.at("openweathermapsrc_apikey");
             m_api_host = settings.at("openweathermapsrc_host");
@@ -41,7 +41,7 @@ class OpenWeatherMapSrc : public WeatherSource
         }
 
 
-        virtual Weather read() {
+        Weather read() {
             if (isAvailable()) {
                 HTTPRequest r(m_api_host + "/data/2.5/weather?id=" + m_city_id  + "&units=metric&APPID=" + m_api_key);
                 const HTTPResponse resp = r.perform();
@@ -65,14 +65,14 @@ class OpenWeatherMapSrc : public WeatherSource
         }
 
 
-        virtual bool isAvailable() const {
+        bool isAvailable() const {
             return m_last_request_time == std::chrono::system_clock::time_point::min() ||
                     ( m_last_request_time > std::chrono::system_clock::now() - OpenWeatherMapSrc::m_request_interval &&
                     !m_api_key.empty() && !m_api_host.empty() );
         }
 
 
-        virtual void writeDefaultConfig(ConfigWriteContext & ctx) const {
+        void writeDefaultConfig(ConfigWriteContext & ctx) const {
             ctx.add("openweathermapsrc_apikey", "[api key]");
             ctx.add("openweathermapsrc_host", "[host address]");
             ctx.add("openweathermapsrc_out", "[file which API response is written to]");

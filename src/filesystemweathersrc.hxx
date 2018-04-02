@@ -30,12 +30,12 @@ class FileSystemWeatherSrc : public WeatherSource
             : m_wd(std::move(working_dir))
         {}
 
-        virtual void configure(std::unordered_map<std::string, std::string> const & settings) {
+        void configure(std::unordered_map<std::string, std::string> const & settings) {
             m_path = m_wd + "/" + settings.at("filesystemweathersrc_in");
         }
 
 
-        virtual Weather read() {
+        Weather read() {
             if (isAvailable()) {
                 using json = nlohmann::json;
                 std::ifstream json_file(m_path);
@@ -51,12 +51,12 @@ class FileSystemWeatherSrc : public WeatherSource
         }
 
 
-        virtual bool isAvailable() const {
+        bool isAvailable() const {
             return access(m_path.c_str(), R_OK) == 0; // if file is readable
         }
 
 
-        virtual void writeDefaultConfig(ConfigWriteContext & ctx) const {
+        void writeDefaultConfig(ConfigWriteContext & ctx) const {
             ctx.add("filesystemweathersrc_in", m_wd + "/fs_src_in");
         }
 
