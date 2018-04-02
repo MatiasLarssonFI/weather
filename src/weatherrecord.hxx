@@ -1,7 +1,6 @@
 #ifndef WEATHERRECORD_HXX
 #define WEATHERRECORD_HXX
 
-#include "weatherinterpretation.hxx"
 #include "measures.hxx"
 #include "units.hxx"
 
@@ -10,9 +9,6 @@
 
 struct WeatherRecord
 {
-    //! Makes a WeatherIntepretation out of the record.
-    WeatherInterpretation makeInterpretation() const;
-
     RainVolume<Millimeter<unsigned>> rain_vol;
     CloudPercentage cloud_percentage;
     WindSpeed<MetersPerSec<unsigned>> wind_speed;

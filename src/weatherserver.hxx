@@ -40,6 +40,24 @@ class WeatherServer
 
         static const std::string _working_dir;
         static constexpr char _conf_filename[] = "server_config";
+
+
+        //! Terminal method
+        template <class Tintr>
+        void initSources() {}
+
+
+        //! Init weather sources
+        /*!
+         * \tparam Tintr weather record interpreter type
+         * \tparam Tsrc weather source type
+         */
+        template <class Tintr, class Tsrc, class... Tsources>
+        void initSources() {
+            m_sources.emplace_back(new Tsrc(WeatherServer::_working_dir));
+            initSources<Tintr, Tsources...>();
+        }
+
 };
 
 
