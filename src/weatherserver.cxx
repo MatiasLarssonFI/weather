@@ -14,7 +14,7 @@ constexpr char WeatherServer::_conf_filename[];
 const std::string WeatherServer::_working_dir = std::string(std::getenv("HOME")) + "/.mlweather";
 
 WeatherServer::WeatherServer()
-    : m_sources() // emplacements in body
+    : m_sources() // emplacements will be done by initSources()
     , m_settings_helper(WeatherServer::_conf_filename, m_sources, WeatherServer::_working_dir)
     , m_settings() // assignment in body
 {
