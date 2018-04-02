@@ -11,9 +11,11 @@ void from_json(const nlohmann::json& j, WeatherRecord& wr) {
     auto rain_it = j.find("rain");
     if (rain_it != j.end()) {
         wr.rain_vol.value = (unsigned)(*rain_it).at("3h");
+    } else {
+        wr.rain_vol.value = 0;
     }
 
     wr.cloud_percentage.value = (unsigned)j.at("clouds").at("all");
-    wr.wind_speed.value = (unsigned)j.at("wind").at("speed");
+    wr.wind_speed.value = (unsigned)std::round((float)j.at("wind").at("speed"));
     wr.temperature.value = (int)j.at("main").at("temp");
 }
