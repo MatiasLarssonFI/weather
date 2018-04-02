@@ -78,11 +78,10 @@ class WeatherServerSettings
             // create directory for config
             ::mkdir(parent_dir.c_str(), S_IRWXU);
 
-            // write default config from sources
+            // write default config
             std::ofstream conf_file(full_path);
-            ConfigWriteContext ctx(conf_file);
-
             if (conf_file) {
+                ConfigWriteContext ctx(conf_file);
                 for (auto const & src : m_sources) {
                     src->writeDefaultConfig(ctx);
                 }
