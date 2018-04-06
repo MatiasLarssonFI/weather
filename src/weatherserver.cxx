@@ -18,8 +18,7 @@ WeatherServer::WeatherServer()
     , m_settings_helper(WeatherServer::_conf_filename, m_sources, WeatherServer::_working_dir)
     , m_settings() // assignment in body
 {
-    using Tintr = NordicInterpreter;
-    initSources<Tintr, OpenWeatherMapSrc<Tintr>, FileSystemWeatherSrc<Tintr>>();
+    initSources();
     // m_sources must be populated in order to makeSettings()
     m_settings = m_settings_helper.makeSettings();
 
@@ -38,3 +37,27 @@ Weather WeatherServer::currentWeather() {
     }
     throw std::runtime_error("none of the weather sources are available");
 }
+
+
+void WeatherServer::initSources() {
+    t_settings const & global_settings = m_settings_helper.global;
+    const std::string intrStrategy = global_settings.count("interpretation") ? global_settings.at("interpretation") : "nordic";
+    if (intrStrategy == "nordic") {
+        using Tintr = NordicInterpreter;
+        emplaceSources<Tintr, OpenWeatherMapSrc<Tintr>, FileSystemWeatherSrc<Tintr>>();
+    } else {
+        throw std::runtime_error(std::string("bad weather interpreter strategy ") + intrStrategy);
+    }
+}
+
+
+template <class Tintr, class Tsrc, class... Tsources>
+void WeatherServer::emplaceSources() {
+    m_sources.emplace_back(new Tsrc(WeatherServer::_working_dir));
+    emplaceSources<Tintr, Tsources...>();
+}
+
+
+// Terminal method
+template <class Tintr>
+void WeatherServer::emplaceSources() const {}

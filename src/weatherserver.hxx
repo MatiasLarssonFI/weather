@@ -42,9 +42,10 @@ class WeatherServer
         static constexpr char _conf_filename[] = "server_config";
 
 
+
         //! Terminal method
         template <class Tintr>
-        void initSources() {}
+        void emplaceSources() const;
 
 
         //! Init weather sources
@@ -53,10 +54,10 @@ class WeatherServer
          * \tparam Tsrc weather source type
          */
         template <class Tintr, class Tsrc, class... Tsources>
-        void initSources() {
-            m_sources.emplace_back(new Tsrc(WeatherServer::_working_dir));
-            initSources<Tintr, Tsources...>();
-        }
+        void emplaceSources();
+
+
+        void initSources();
 
 };
 

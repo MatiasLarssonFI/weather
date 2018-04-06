@@ -33,23 +33,51 @@ class WeatherServerSettings
             : m_conf_filename(std::move(conf_filename))
             , m_sources(sources)
             , m_wd(std::move(working_dir))
+            , global(readSettings())
+            , m_settings_exist(!global.empty())
         {}
 
         /*!
          * Returns a map of the settings.
+         *
+         * Creates default settings if there are
+         * no settings on disk yet.
+         *
          * \throw std::runtime_error
          */
         t_settings makeSettings() const {
+            // if settings file didn't exist, create default
+            if (!m_settings_exist) {
+                createDefaultConfig(m_wd, m_wd + "/" + m_conf_filename);
+            }
+            return readSettings();
+        }
+    private:
+        /*!
+         * Creates the default config file.
+         */
+        void createDefaultConfig(std::string const & parent_dir, std::string const & full_path) const {
+            // create directory for config
+            ::mkdir(parent_dir.c_str(), S_IRWXU);
+
+            // write default config
+            std::ofstream conf_file(full_path);
+            if (conf_file) {
+                ConfigWriteContext ctx(conf_file);
+                ctx.add("interpretation", "nordic");
+                for (auto const & src : m_sources) {
+                    src->writeDefaultConfig(ctx);
+                }
+            }
+        }
+
+
+        //! Read settings from disk
+        t_settings readSettings() const {
             if (!m_wd.empty()) {
                 // file path
                 const std::string path = m_wd + "/" + m_conf_filename;
                 std::ifstream conf_file(path);
-
-                // if file doesn't exist, create default
-                if (!conf_file) {
-                    createDefaultConfig(m_wd, path);
-                    conf_file.open(path);
-                }
 
                 if (conf_file) {
                     // parse settings of format 'key: value'
@@ -70,28 +98,16 @@ class WeatherServerSettings
                 throw std::runtime_error("failed to get env var for home dir");
             }
         }
-    private:
-        /*!
-         * Creates the default config file.
-         */
-        void createDefaultConfig(std::string const & parent_dir, std::string const & full_path) const {
-            // create directory for config
-            ::mkdir(parent_dir.c_str(), S_IRWXU);
-
-            // write default config
-            std::ofstream conf_file(full_path);
-            if (conf_file) {
-                ConfigWriteContext ctx(conf_file);
-                for (auto const & src : m_sources) {
-                    src->writeDefaultConfig(ctx);
-                }
-            }
-        }
 
 
         const std::string m_conf_filename;
         const std::vector<TpSrc> & m_sources;
         const std::string m_wd;
+
+    public:
+        const t_settings global; //!< global (or pre-read) settings
+    private:
+        bool m_settings_exist; //!< if settings file was read successfully
 };
 
 #endif // WEATHERSERVERSETTINGS_HXX
