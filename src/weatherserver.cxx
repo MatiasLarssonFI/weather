@@ -16,11 +16,11 @@ const std::string WeatherServer::_working_dir = std::string(std::getenv("HOME"))
 WeatherServer::WeatherServer()
     : m_sources() // emplacements will be done by initSources()
     , m_settings_helper(WeatherServer::_conf_filename, m_sources, WeatherServer::_working_dir)
-    , m_settings() // assignment in body
+    , m_settings(m_settings_helper.settings()) // assignment in body
 {
     initSources();
     // m_sources must be populated in order to makeSettings()
-    m_settings = m_settings_helper.makeSettings();
+    m_settings_helper.updateSettings();
 
     // configure sources using settings
     for (auto & src : m_sources) {
@@ -40,8 +40,7 @@ Weather WeatherServer::currentWeather() {
 
 
 void WeatherServer::initSources() {
-    t_settings const & global_settings = m_settings_helper.global;
-    const std::string intrStrategy = global_settings.count("interpretation") ? global_settings.at("interpretation") : "nordic";
+    const std::string intrStrategy = m_settings.count("interpretation") ? m_settings.at("interpretation") : "nordic";
     if (intrStrategy == "nordic") {
         using Tintr = NordicInterpreter;
         emplaceSources<Tintr, OpenWeatherMapSrc<Tintr>, FileSystemWeatherSrc<Tintr>>();

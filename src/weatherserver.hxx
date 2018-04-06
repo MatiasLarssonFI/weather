@@ -36,7 +36,7 @@ class WeatherServer
 
         std::vector<t_pSrc> m_sources; //!< sources are ordered by descending priority
         WeatherServerSettings<t_pSrc> m_settings_helper;
-        t_settings m_settings;
+        t_settings const & m_settings;
 
         static const std::string _working_dir;
         static constexpr char _conf_filename[] = "server_config";

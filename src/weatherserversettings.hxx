@@ -33,24 +33,30 @@ class WeatherServerSettings
             : m_conf_filename(std::move(conf_filename))
             , m_sources(sources)
             , m_wd(std::move(working_dir))
-            , global(readSettings())
-            , m_settings_exist(!global.empty())
+            , m_settings(readSettings())
         {}
 
+
         /*!
-         * Returns a map of the settings.
+         * Updates the settings map.
          *
          * Creates default settings if there are
          * no settings on disk yet.
          *
          * \throw std::runtime_error
          */
-        t_settings makeSettings() const {
-            // if settings file didn't exist, create default
-            if (!m_settings_exist) {
+        void updateSettings() {
+            // if settings file didn't exist or was empty, create default
+            if (m_settings.empty()) {
                 createDefaultConfig(m_wd, m_wd + "/" + m_conf_filename);
+                m_settings = readSettings();
             }
-            return readSettings();
+        }
+
+
+        //! Returns a map of currently read settings
+        t_settings const & settings() const {
+            return m_settings;
         }
     private:
         /*!
@@ -74,40 +80,30 @@ class WeatherServerSettings
 
         //! Read settings from disk
         t_settings readSettings() const {
-            if (!m_wd.empty()) {
-                // file path
-                const std::string path = m_wd + "/" + m_conf_filename;
-                std::ifstream conf_file(path);
+            // file path
+            const std::string path = m_wd + "/" + m_conf_filename;
+            std::ifstream conf_file(path);
+            t_settings settings;
 
-                if (conf_file) {
-                    // parse settings of format 'key: value'
-                    t_settings settings;
-                    std::string key, value;
-                    while (std::getline(conf_file, key, ':')) {
-                        if (!key.empty() && key[0] != '#') { // # stands for comment
-                            std::getline(conf_file, value);
-                            ltrim(value);
-                            settings[key] = value;
-                        }
+            if (conf_file) {
+                // parse settings of format 'key: value'
+                std::string key, value;
+                while (std::getline(conf_file, key, ':')) {
+                    if (!key.empty() && key[0] != '#') { // # stands for comment
+                        std::getline(conf_file, value);
+                        ltrim(value);
+                        settings[key] = value;
                     }
-                    return settings;
-                } else {
-                    throw std::runtime_error(path + ": failed to open config file for reading.");
                 }
-            } else {
-                throw std::runtime_error("failed to get env var for home dir");
             }
+            return settings;
         }
 
 
         const std::string m_conf_filename;
         const std::vector<TpSrc> & m_sources;
         const std::string m_wd;
-
-    public:
-        const t_settings global; //!< global (or pre-read) settings
-    private:
-        bool m_settings_exist; //!< if settings file was read successfully
+        t_settings m_settings; //!< settings read from disk
 };
 
 #endif // WEATHERSERVERSETTINGS_HXX
