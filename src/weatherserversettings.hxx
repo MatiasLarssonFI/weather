@@ -20,6 +20,7 @@ static void ltrim(std::string &s) {
 }
 
 
+//! Reads settings from disk and writes default settings to disk.
 /*!
  * \tparam TpSrc source pointer type
  */
@@ -29,32 +30,35 @@ class WeatherServerSettings
     public:
         using t_settings = std::unordered_map<std::string, std::string>;
 
-        WeatherServerSettings(std::string conf_filename, std::vector<TpSrc> const & sources, std::string working_dir)
+
+        /*!
+         * \param conf_filename Basename of the config file
+         * \param working_dir Absolute path to config file parent dir
+         */
+        WeatherServerSettings(std::string conf_filename, std::string working_dir)
             : m_conf_filename(std::move(conf_filename))
-            , m_sources(sources)
             , m_wd(std::move(working_dir))
             , m_settings(readSettings())
         {}
 
 
+        //! Creates default settings if there are no settings on disk yet.
         /*!
-         * Updates the settings map.
+         * The settings (return value of settings()) is updated if default
+         * config is created.
          *
-         * Creates default settings if there are
-         * no settings on disk yet.
-         *
-         * \throw std::runtime_error
+         * \param sources Sources provide their own default config
          */
-        void updateSettings() {
+        void tryWriteDefaultSettings(const std::vector<TpSrc> & sources) {
             // if settings file didn't exist or was empty, create default
             if (m_settings.empty()) {
-                createDefaultConfig(m_wd, m_wd + "/" + m_conf_filename);
+                createDefaultConfig(sources);
                 m_settings = readSettings();
             }
         }
 
 
-        //! Returns a map of currently read settings
+        //! Returns the settings
         t_settings const & settings() const {
             return m_settings;
         }
@@ -62,16 +66,16 @@ class WeatherServerSettings
         /*!
          * Creates the default config file.
          */
-        void createDefaultConfig(std::string const & parent_dir, std::string const & full_path) const {
+        void createDefaultConfig(const std::vector<TpSrc> & sources) const {
             // create directory for config
-            ::mkdir(parent_dir.c_str(), S_IRWXU);
+            ::mkdir(m_wd.c_str(), S_IRWXU);
 
             // write default config
-            std::ofstream conf_file(full_path);
+            std::ofstream conf_file(m_wd + "/" + m_conf_filename);
             if (conf_file) {
                 ConfigWriteContext ctx(conf_file);
                 ctx.add("interpretation", "nordic");
-                for (auto const & src : m_sources) {
+                for (auto const & src : sources) {
                     src->writeDefaultConfig(ctx);
                 }
             }
@@ -101,7 +105,6 @@ class WeatherServerSettings
 
 
         const std::string m_conf_filename;
-        const std::vector<TpSrc> & m_sources;
         const std::string m_wd;
         t_settings m_settings; //!< settings read from disk
 };

@@ -15,12 +15,11 @@ const std::string WeatherServer::_working_dir = std::string(std::getenv("HOME"))
 
 WeatherServer::WeatherServer()
     : m_sources() // emplacements will be done by initSources()
-    , m_settings_helper(WeatherServer::_conf_filename, m_sources, WeatherServer::_working_dir)
+    , m_settings_helper(WeatherServer::_conf_filename, WeatherServer::_working_dir)
     , m_settings(m_settings_helper.settings()) // assignment in body
 {
     initSources();
-    // m_sources must be populated in order to makeSettings()
-    m_settings_helper.updateSettings();
+    m_settings_helper.tryWriteDefaultSettings(m_sources);
 
     // configure sources using settings
     for (auto & src : m_sources) {
