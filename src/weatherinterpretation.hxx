@@ -6,6 +6,7 @@ class WeatherInterpretation
 {
     public:
         const bool is_rainy;
+        const bool is_sunny;
         const bool is_clear;
         const bool is_windy;
         const bool is_warm;
