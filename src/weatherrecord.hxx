@@ -11,6 +11,7 @@ struct WeatherRecord
 {
     RainVolume<Millimeter<unsigned>> rain_vol;
     CloudPercentage cloud_percentage;
+    HumidityPercentage humidity_percentage;
     WindSpeed<MetersPerSec<unsigned>> wind_speed;
     Temperature<Celcius<int>> temperature;
     unsigned sunrise_time;

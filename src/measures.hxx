@@ -41,5 +41,9 @@ struct CloudPercentage : public Measure<unsigned> {
     using Measure<unsigned>::Measure;
 };
 
+struct HumidityPercentage : public Measure<unsigned> {
+    using Measure<unsigned>::Measure;
+};
+
 
 #endif // MEASURES_HXX
