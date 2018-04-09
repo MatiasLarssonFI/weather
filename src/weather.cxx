@@ -11,7 +11,11 @@ int main() {
     std::cout << (intrp.is_clear ? "Clear\n" : "Cloudy\n")
             << (intrp.is_sunny ? "Sunny\n" : "")
             << (rec.is_sun_up ? "Sun is up\n" : "Sun is down\n")
-            << (intrp.is_windy ? "Windy\n" : "Little or no wind\n")
-            << (intrp.is_rainy ? "Rainy\n" : "No rain\n")
-            << (intrp.is_warm ? "Warm\n" : "Cool or cold") << std::endl;
+            << (intrp.is_windy ? "Windy\n" : "")
+            << (intrp.is_rainy ? "Rainy\n" : "")
+            << (intrp.is_snowy ? "Snowy\n" : "")
+            << (intrp.is_hot ? "Hot\n" : "")
+            << (intrp.is_cold ? "Cold\n" : "")
+            << (intrp.is_freezing ? "Freezing\n" : "")
+            << (intrp.is_warm ? "Warm\n" : "") << std::endl;
 }
