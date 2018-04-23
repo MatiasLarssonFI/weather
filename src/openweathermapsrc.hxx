@@ -50,6 +50,7 @@ class OpenWeatherMapSrc : public WeatherSource
                 if (http_status < 300 && http_status >= 200) {
                     saveResponseBody(resp_body);
                     m_last_request_time = std::chrono::system_clock::now();
+                    saveRequestTime();
                     using json = nlohmann::json;
                     json j = json::parse(resp_body);
                     auto wr = j.get<WeatherRecord>();
@@ -79,9 +80,7 @@ class OpenWeatherMapSrc : public WeatherSource
             ctx.add("openweathermapsrc_city_id", "[city ID]");
         }
 
-        virtual ~OpenWeatherMapSrc() {
-            saveRequestTime();
-        }
+        virtual ~OpenWeatherMapSrc() {}
     private:
         //! Loads the last request time (from disk).
         std::chrono::system_clock::time_point makeLastRequestTime() const {
