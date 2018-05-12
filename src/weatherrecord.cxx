@@ -5,12 +5,13 @@
 
 #include <cmath>
 #include <chrono>
+#include <ctime>
 
 
-void from_json(const nlohmann::json& j, WeatherRecord& wr) {
+void from_json(nlohmann::json const & j, WeatherRecord& wr) {
     // JSON spec at https://openweathermap.org/current
 
-    unsigned unix_now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    const std::time_t unix_now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
     auto rain_it = j.find("rain");
     if (rain_it != j.end()) {
