@@ -15,7 +15,10 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include <chrono>
+#include <ctime>
 #include <unistd.h>
+#include <sys/stat.h>
 
 
 //! Source for a file on disk
@@ -37,11 +40,12 @@ class FileSystemWeatherSrc : public WeatherSource
 
         Weather read() {
             if (isAvailable()) {
+                // read from JSON file
                 using json = nlohmann::json;
                 std::ifstream json_file(m_path);
                 json j;
                 json_file >> j;
-                auto wr = j.get<WeatherRecord>();
+                auto wr = j.get<WeatherRecord>(); // JSON to WeatherRecord (calls from_json(nlohmann::json const &, WeatherRecord&))
                 const T interpreter;
                 WeatherInterpretation interpretation(interpreter.interpret(wr));
                 return { std::move(interpretation), std::move(wr) };
@@ -52,7 +56,12 @@ class FileSystemWeatherSrc : public WeatherSource
 
 
         bool isAvailable() const {
-            return access(m_path.c_str(), R_OK) == 0; // if file is readable
+            const char* path_cstr = m_path.c_str();
+            const std::time_t unix_now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            struct stat status;
+            stat(path_cstr, &status);
+            return access(path_cstr, R_OK) == 0 && // if file is readable
+                    unix_now - status.st_mtime < 10 * 60; // if the file is less than 10 minutes old
         }
 
 
