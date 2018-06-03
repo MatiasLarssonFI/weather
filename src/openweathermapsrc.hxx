@@ -38,15 +38,20 @@ class OpenWeatherMapSrc : public WeatherSource
             m_api_key = settings.at("openweathermapsrc_apikey");
             m_api_host = settings.at("openweathermapsrc_host");
             m_city_id = settings.at("openweathermapsrc_city_id");
+            m_log.open(m_wd + "/" + settings.at("openweathermapsrc_log"), std::ios::app);
         }
 
 
         Weather read() {
             if (isAvailable()) {
+                log("sending request");
                 HTTPRequest r(m_api_host + "/data/2.5/weather?id=" + m_city_id  + "&units=metric&APPID=" + m_api_key);
                 const HTTPResponse resp = r.perform();
                 std::string const & resp_body = resp.body();
                 const unsigned http_status = resp.HTTPCode();
+                log("response HTTP status and body:");
+                log(std::to_string(http_status));
+                log(resp_body);
                 if (http_status < 300 && http_status >= 200) {
                     saveResponseBody(resp_body);
                     m_last_request_time = std::chrono::system_clock::now();
@@ -78,6 +83,7 @@ class OpenWeatherMapSrc : public WeatherSource
             ctx.add("openweathermapsrc_host", "[host address]");
             ctx.add("openweathermapsrc_out", "[file which API response is written to]");
             ctx.add("openweathermapsrc_city_id", "[city ID]");
+            ctx.add("openweathermapsrc_log", "owm_log");
         }
 
         virtual ~OpenWeatherMapSrc() {}
@@ -104,11 +110,23 @@ class OpenWeatherMapSrc : public WeatherSource
             }
         }
 
+
         //! Writes the HTTP response body to disk
         void saveResponseBody(std::string const & body) const {
             std::ofstream f(m_out_path, std::ios_base::out|std::ios_base::trunc);
             if (f.is_open()) {
                 f << body << "\n";
+            }
+        }
+
+
+        //! Writes the string to log if log is available
+        void log(std::string str) {
+            if (m_log) {
+                const std::time_t time_now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+                std::string str_now = std::ctime(&time_now);
+                str_now.pop_back(); // to remove the trailing line break
+                m_log << "[" << str_now << "]" << str << std::endl;
             }
         }
 
@@ -123,6 +141,7 @@ class OpenWeatherMapSrc : public WeatherSource
         std::string m_api_key;
         std::string m_api_host;
         std::string m_city_id;
+        std::ofstream m_log;
 };
 
 template <class T>
