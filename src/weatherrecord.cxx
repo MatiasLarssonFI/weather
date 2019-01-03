@@ -5,12 +5,13 @@
 
 #include <cmath>
 #include <chrono>
+#include <ctime>
 
 
-void from_json(const nlohmann::json& j, WeatherRecord& wr) {
+void from_json(nlohmann::json const & j, WeatherRecord& wr) {
     // JSON spec at https://openweathermap.org/current
 
-    unsigned unix_now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    const std::time_t unix_now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
     auto rain_it = j.find("rain");
     if (rain_it != j.end()) {
@@ -26,11 +27,11 @@ void from_json(const nlohmann::json& j, WeatherRecord& wr) {
         wr.snow_vol.value = 0;
     }
 
-    wr.cloud_percentage.value = (unsigned)j.at("clouds").at("all");
+    wr.cloud_percentage.value = j.at("clouds").at("all");
     wr.wind_speed.value = (unsigned)std::round((float)j.at("wind").at("speed"));
     wr.temperature.value = (int)j.at("main").at("temp");
-    wr.humidity_percentage.value = (unsigned)j.at("main").at("humidity");
-    wr.sunrise_time = (unsigned)j.at("sys").at("sunrise");
-    wr.sunset_time = (unsigned)j.at("sys").at("sunset");
+    wr.humidity_percentage.value = j.at("main").at("humidity");
+    wr.sunrise_time = j.at("sys").at("sunrise");
+    wr.sunset_time = j.at("sys").at("sunset");
     wr.is_sun_up = unix_now > wr.sunrise_time && unix_now < wr.sunset_time;
 }
