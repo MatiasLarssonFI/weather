@@ -9,9 +9,11 @@ objects := $(patsubst %.cxx,%.o,$(wildcard *.cxx))
 objects := $(objects) $(patsubst %.cxx,%.o,$(wildcard http/*.cxx))
 BIN=weather
 
+CROSS_COMPILE=$(HOME)/pi-toolchain/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
+
 debug: CXXFLAGS += -g -Wall -Wextra
 
-release: CXX=arm-linux-gnueabihf-g++
+release: CXX=$(CROSS_COMPILE)g++
 release: CXXFLAGS += -O2
 release: BINDIR=../bin/release
 
